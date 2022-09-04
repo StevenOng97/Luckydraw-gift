@@ -1,15 +1,31 @@
 import { GiftSpin } from './gift-spin.entity';
-import { Entity, PrimaryGeneratedColumn, OneToOne, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
+  BaseEntity,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { GiftCategory } from './gift-category.entity';
 
 @Entity()
-export class Gift {
+export class Gift extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(_type => GiftSpin, giftSpin => giftSpin.gift)
+  @OneToOne(() => GiftSpin, (giftSpin) => giftSpin.gift)
+  @JoinColumn()
   giftSpin: GiftSpin;
 
   @ManyToOne(() => GiftCategory, (giftCategory) => giftCategory.gifts)
   giftCategory: GiftCategory;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

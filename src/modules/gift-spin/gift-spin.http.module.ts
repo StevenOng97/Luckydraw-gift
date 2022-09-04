@@ -7,13 +7,19 @@ import { GiftSpinService } from './gift-spin.service';
 import { GiftRepository } from '../../repositories/gift.repository';
 import { GiftSpinModule } from '../../repositories/gift-spin.module';
 import { GiftModule } from '../../repositories/gift.module';
+import { AuthClientModule } from '../auth-client/auth-client.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @Module({
-  imports: [
-    GiftSpinModule,
-    GiftModule
-  ],
+  imports: [GiftSpinModule, GiftModule, AuthClientModule],
   controllers: [GiftSpinController],
-  providers: [GiftSpinService, GiftService],
+  providers: [
+    GiftSpinService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class GiftSpinHttpModule {}

@@ -1,6 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from "typeorm"
 
-export class initializeDb1662280118189 implements MigrationInterface {
+export class abc1662283610299 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
     }

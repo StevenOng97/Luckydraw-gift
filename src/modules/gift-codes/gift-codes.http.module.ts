@@ -1,13 +1,20 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { GiftCodesController } from './gift-codes.controller';
-import { GiftCodesRepository } from '../../repositories/gift-codes.repository';
 import { GiftCodesService } from './gift-codes.service';
 import { GiftCodesModule } from '../../repositories/gift-codes.module';
+import { AuthGuard } from '../../guards/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthClientModule } from '../auth-client/auth-client.module';
 
 @Module({
-  imports: [GiftCodesModule],
+  imports: [GiftCodesModule, AuthClientModule],
   controllers: [GiftCodesController],
-  providers: [GiftCodesService],
+  providers: [
+    GiftCodesService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class GiftCodesHttpModule {}

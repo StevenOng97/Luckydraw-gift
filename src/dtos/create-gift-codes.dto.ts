@@ -7,7 +7,4 @@ export class CreateGiftCodesDto {
   @IsBoolean()
   @IsNotEmpty()
   isValid: boolean;
-
-  @IsNotEmpty()
-  userId: string;
 }

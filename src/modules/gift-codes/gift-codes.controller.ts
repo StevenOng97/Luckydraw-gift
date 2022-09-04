@@ -1,7 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Req,
+} from '@nestjs/common';
 import { CreateGiftCodesDto } from '../../dtos/create-gift-codes.dto';
 import { GiftCodes } from '../../entities/gift-codes.entity';
 import { GiftCodesService } from './gift-codes.service';
+import { Request } from 'express';
+import jwt_decode from 'jwt-decode';
+import { AccessToken } from 'src/interfaces/i.accessToken';
+import { RedeemGiftCodeDto } from '../../dtos/redeem-gift-code.dto';
 
 @Controller('gift-codes')
 export class GiftCodesController {
@@ -21,7 +36,28 @@ export class GiftCodesController {
   createGiftCode(
     @Body() createGiftCodeDto: CreateGiftCodesDto,
   ): Promise<GiftCodes> {
+    // const accessToken = request.headers['authorization']?.split(' ')[1];
+    // const userId = jwt_decode<AccessToken>(accessToken).userId;
+
+    // Logger.verbose(userId);
+    // const payload = {
+    //   ...createGiftCodeDto,
+    //   userId,
+    // };
     return this.giftCodesService.createGiftCode(createGiftCodeDto);
+  }
+
+  @Put('/:id')
+  redeemGiftCode(@Req() request: Request, @Param('id') id: string): any {
+    const accessToken = request.headers['authorization']?.split(' ')[1];
+    const userId = jwt_decode<AccessToken>(accessToken).userId;
+
+    const redeemGiftCodeDto: RedeemGiftCodeDto = {
+      id,
+      userId,
+    };
+
+    return this.giftCodesService.redeemGiftCode(redeemGiftCodeDto);
   }
 
   @Delete('/:id')

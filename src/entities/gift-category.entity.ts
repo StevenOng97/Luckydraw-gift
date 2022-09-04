@@ -1,8 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, OneToMany, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  Column,
+  BaseEntity,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Gift } from './gift.entity';
 
 @Entity()
-export class GiftCategory {
+export class GiftCategory extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -12,6 +20,12 @@ export class GiftCategory {
   @Column()
   rate: number;
 
-  @OneToMany((_type) => Gift, (gift) => gift.giftCategory)
+  @OneToMany(() => Gift, (gift) => gift.giftCategory)
   gifts: Gift[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

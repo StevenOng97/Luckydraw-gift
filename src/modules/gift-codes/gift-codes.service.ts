@@ -1,15 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from '../../services/base.service';
 import { CreateGiftCodesDto } from '../../dtos/create-gift-codes.dto';
 import { GiftCodes } from '../../entities/gift-codes.entity';
 import { GiftCodesRepository } from '../../repositories/gift-codes.repository';
+import { LoggerService } from '../../services/logger.service';
+import { RedeemGiftCodeDto } from '../../dtos/redeem-gift-code.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
-export class GiftCodesService {
+export class GiftCodesService extends BaseService<
+  GiftCodes,
+  GiftCodesRepository
+> {
   constructor(
+    @Inject('AUTH_CLIENT')
+    private readonly client: ClientProxy,
     @InjectRepository(GiftCodesRepository)
     private giftCodesRepository: GiftCodesRepository,
-  ) {}
+    private loggerService: LoggerService,
+  ) {
+    super(giftCodesRepository, loggerService);
+  }
 
   getGiftCodes(): Promise<GiftCodes[]> {
     return this.giftCodesRepository.getGiftCodes();
@@ -19,7 +36,7 @@ export class GiftCodesService {
     const found = await this.giftCodesRepository.findOne({ where: { id } });
 
     if (!found) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
+      throw new NotFoundException(`Code with ID "${id}" not found`);
     }
 
     return found;
@@ -27,6 +44,22 @@ export class GiftCodesService {
 
   createGiftCode(createGiftCodeDto: CreateGiftCodesDto): Promise<GiftCodes> {
     return this.giftCodesRepository.createGiftCode(createGiftCodeDto);
+  }
+
+  async redeemGiftCode(
+    redeemGiftCodeDto: RedeemGiftCodeDto,
+  ): Promise<GiftCodes> {
+    const giftCode = await this.getGiftCodeById(redeemGiftCodeDto.id);
+
+    if (!giftCode.isValid) {
+      throw new BadRequestException('Code đã được sử dụng.');
+    }
+
+    giftCode.redeemBy = redeemGiftCodeDto.userId;
+    giftCode.redeemAt = new Date();
+    giftCode.isValid = false;
+
+    return await giftCode.save();
   }
 
   async deleteGiftCode(id: string): Promise<void> {

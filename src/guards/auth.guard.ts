@@ -11,11 +11,16 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
 
+    const token = req.headers['authorization']?.split(' ')[1];
+    // const token =
+    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkNmRmOGJiMS05M2E3LTQ3OGEtOTg0Ny01ODAxNDM2Y2M5OTciLCJpYXQiOjE2NjIyOTM0NTQsImV4cCI6MTY2MjI5NzA1NH0.I0siD559iY1nirGTcAOIgCe7C1j3PGtdXKmo4qL51jw';
     try {
       const source$ = await this.client
         .send(
           { role: 'auth', cmd: 'check' },
-          { jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoiZ2lhbmd1eWVuMjIxMTk3QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzNGFiY2QifSwic3ViIjoiYjdhZjVkMDctMmRkYS00MDUxLTk5NTYtZmFjNzFmMjA2NjZlIiwiaWF0IjoxNjYyMjczMjMwLCJleHAiOjE2NjIyNzY4MzB9.xOaBOuOZ2W6e36DAtJxXKRzqAj6C2uaabUfWjra7hww" },
+          {
+            jwt: token,
+          },
         )
         .pipe(timeout(5000));
 

@@ -6,14 +6,20 @@ import { GiftRepository } from '../../repositories/gift.repository';
 import { CreateGiftSpinDto } from '../../dtos/create-gift-spin.dto';
 import { GiftSpin } from '../../entities/gift-spin.entity';
 import { GiftSpinRepository } from '../../repositories/gift-spin.repository';
+import { BaseService } from '../../services/base.service';
+import { LoggerService } from '../../services/logger.service';
 
 @Injectable()
-export class GiftSpinService {
+export class GiftSpinService extends BaseService<GiftSpin, GiftSpinRepository> {
   constructor(
     @InjectRepository(GiftSpinRepository)
     private giftSpinRepository: GiftSpinRepository,
+    @InjectRepository(Gift)
     private giftService: GiftService,
-  ) {}
+    private loggerService: LoggerService,
+  ) {
+    super(giftSpinRepository, loggerService);
+  }
 
   getGiftSpins(): Promise<GiftSpin[]> {
     return this.giftSpinRepository.getGiftSpins();

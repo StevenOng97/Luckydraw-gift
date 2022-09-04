@@ -1,15 +1,23 @@
+import { BaseService } from './../../services/base.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateGiftCategoryDto } from '../../dtos/create-gift-category.dto';
 import { GiftCategory } from '../../entities/gift-category.entity';
 import { GiftCategoryRepository } from '../../repositories/gift-category.repository';
+import { LoggerService } from '../../services/logger.service';
 
 @Injectable()
-export class GiftCategoryService {
+export class GiftCategoryService extends BaseService<
+  GiftCategory,
+  GiftCategoryRepository
+> {
   constructor(
     @InjectRepository(GiftCategoryRepository)
     private giftCategoryRepository: GiftCategoryRepository,
-  ) {}
+    private loggerService: LoggerService,
+  ) {
+    super(giftCategoryRepository, loggerService);
+  }
 
   getGiftCategories(): Promise<GiftCategory[]> {
     return this.giftCategoryRepository.getGiftCategories();
@@ -25,10 +33,6 @@ export class GiftCategoryService {
     return found;
   }
 
-  createGiftCategory(createGiftCategoryDto: CreateGiftCategoryDto): Promise<GiftCategory> {
-    return this.giftCategoryRepository.createGiftCategory(createGiftCategoryDto);
-  }
-
   async deleteGiftCategory(id: string): Promise<void> {
     const result = await this.giftCategoryRepository.delete({ id });
 
@@ -37,7 +41,10 @@ export class GiftCategoryService {
     }
   }
 
-  async updateGiftCategory(id: string, giftCategory: any): Promise<GiftCategory> {
+  async updateGiftCategory(
+    id: string,
+    giftCategory: any,
+  ): Promise<GiftCategory> {
     const gift = await this.getGiftCategoryById(id);
 
     const updatedGiftObj = Object.assign(gift, giftCategory);

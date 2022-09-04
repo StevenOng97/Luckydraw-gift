@@ -29,8 +29,8 @@ export class GiftController {
   }
 
   @Post()
-  creatGift(@Body() createGiftDto: CreateGiftDto): Promise<Gift> {
-    return this.giftService.createGift(createGiftDto);
+  async createGift(@Body() createGiftDto: CreateGiftDto): Promise<Gift> {
+    return await this.giftService.createGift(createGiftDto);
   }
 
   @Delete('/:id')

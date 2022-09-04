@@ -17,9 +17,7 @@ export class GiftRepository extends Repository<Gift> {
   }
 
   async createGift(createGiftDto: CreateGiftDto): Promise<Gift> {
-    const { giftSpinId } = createGiftDto;
-
-    const gift = this.create({});
+    const gift = this.create();
 
     await this.save(gift);
     return gift;

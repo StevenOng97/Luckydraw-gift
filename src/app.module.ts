@@ -7,6 +7,7 @@ import { GiftCategoryHttpModule } from './modules/gift-category/gift-category.ht
 import { GiftSpinHttpModule } from './modules/gift-spin/gift-spin.http.module';
 import { GiftCodesHttpModule } from './modules/gift-codes/gift-codes.http.module';
 import { LoggerModule } from './modules/logger/logger.module';
+import { AuthClientModule } from './modules/auth-client/auth-client.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { LoggerModule } from './modules/logger/logger.module';
     GiftCategoryHttpModule,
     GiftSpinHttpModule,
     GiftCodesHttpModule,
+    AuthClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],

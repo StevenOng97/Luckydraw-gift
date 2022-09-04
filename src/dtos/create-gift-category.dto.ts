@@ -7,7 +7,6 @@ export class CreateGiftCategoryDto {
 
   @IsNotEmpty()
   rate: number;
-
-  @IsNotEmpty()
+  
   giftId: Gift;
 }

@@ -29,7 +29,7 @@ export class GiftCategoryController {
   createGiftCategory(
     @Body() createGiftCategoryDto: CreateGiftCategoryDto,
   ): Promise<GiftCategory> {
-    return this.giftCategoryService.createGiftCategory(createGiftCategoryDto);
+    return this.giftCategoryService.store(createGiftCategoryDto);
   }
 
   @Delete('/:id')

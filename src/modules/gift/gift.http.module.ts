@@ -1,3 +1,5 @@
+import { GiftCategory } from './../../entities/gift-category.entity';
+import { GiftCategoryRepository } from './../../repositories/gift-category.repository';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,21 +11,16 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GiftSpinService } from '../gift-spin/gift-spin.service';
 import { GiftModule } from '../../repositories/gift.module';
 import { GiftSpinModule } from '../../repositories/gift-spin.module';
+import { GiftCategoryModule } from '../../repositories/gift-category.module';
+import { AuthClientModule } from '../auth-client/auth-client.module';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([GiftCategoryRepository]),
+    GiftCategoryModule,
     GiftModule,
     GiftSpinModule,
-    ClientsModule.register([
-      {
-        name: 'AUTH_CLIENT',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 4000,
-        },
-      },
-    ]),
+    AuthClientModule,
   ],
   controllers: [GiftController],
   providers: [
